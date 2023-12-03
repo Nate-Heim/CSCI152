@@ -1,6 +1,7 @@
 import java.awt.*;
 
 public class WarUI {
+    static int time;
 
     static{
         StdDraw.setScale(-1,1);
@@ -21,9 +22,11 @@ public class WarUI {
 
         StdDraw.picture(.25,.7,cardPath, .35, .5);
         StdDraw.picture(.75,.7,otherCardPath, .35, .5);
+        StdDraw.text(.75,.3,"Cpu");
+        StdDraw.text(.25,.3,"Player");
 
 
-        animate();
+
     }
 
     public static void drawBacks(int playerDeckSize, int cpuDeckSize){
@@ -36,17 +39,17 @@ public class WarUI {
         StdDraw.text(-.5,.8,"Cpu Deck");
         StdDraw.text(-.5,0,String.valueOf(playerDeckSize));
         StdDraw.text(-.5,-.7, "Player Deck");
-        animate();
+
     }
 
     public static void drawWinner(String winner){
         String winnerText = winner + " Wins!";
         StdDraw.text(0,0,winnerText);
-        animate();
+
     }
 
     public static void animate(){
-        StdDraw.pause(1);
+        StdDraw.pause(time);
         StdDraw.show();
 
     }
@@ -55,7 +58,7 @@ public class WarUI {
 
 
     public static void main(String[] args) {
-
+        time=Integer.parseInt(args[0]);
         String winner;
 
         WarLib.DeckShuffle(initalDeck);
@@ -64,15 +67,13 @@ public class WarUI {
             if(i%2==0)WarLib.putCard(playerDeck, WarLib.pullCard(initalDeck));
             else WarLib.putCard(cpuDeck,WarLib.pullCard(initalDeck));
         }
+        int playerHand,cpuHand, playerLength, cpuLength;
+
         while(true){
-            int playerHand = WarLib.pullCard(playerDeck);
-            int cpuHand = WarLib.pullCard(cpuDeck);
+            StdDraw.clear(Color.green);
 
-            int playerLength = WarLib.getLength(playerDeck);
-            int cpuLength = WarLib.getLength(cpuDeck);
-
-
-
+            playerLength = WarLib.getLength(playerDeck);
+            cpuLength = WarLib.getLength(cpuDeck);
             if (cpuLength == 0){
                 winner = "Player";
                 break;
@@ -84,20 +85,37 @@ public class WarUI {
 
             }
 
-            drawCard(playerHand,cpuHand);
-            drawBacks(playerLength,cpuLength);
-
+            if(WarLib.playerTurn){
+                playerHand = WarLib.pullCard(playerDeck);
+                cpuHand = WarLib.pullCard(cpuDeck);
+            }else{
+                cpuHand = WarLib.pullCard(cpuDeck);
+                playerHand = WarLib.pullCard(playerDeck);
+            }
 
             if(WarLib.compareCard(playerHand,cpuHand)){
                 WarLib.putCard(playerDeck,playerHand);
                 WarLib.putCard(playerDeck,cpuHand);
+                winner="Player";
+                drawWinner(winner);
             }else{
                 WarLib.putCard(cpuDeck,playerHand);
                 WarLib.putCard(cpuDeck,cpuHand);
+                winner="Cpu";
+                drawWinner(winner);
             }
+
+
+            drawCard(playerHand,cpuHand);
+            drawBacks(playerLength,cpuLength);
+            animate();
+
         }
-        drawBacks(0,52);
+        drawBacks(playerLength,cpuLength);
+
         drawWinner(winner);
+        animate();
+
 
 
 

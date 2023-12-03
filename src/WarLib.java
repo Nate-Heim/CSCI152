@@ -1,7 +1,8 @@
-public class WarLib {
+public class WarLib{
 
     final static String[] suits = {"spades","clubs", "hearts","diamonds"}; //ascending order of worst to best
     final static String[] rank = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+    public static boolean playerTurn = false;
 
     static String[] master_deck = new String[52];
     static{
@@ -84,13 +85,14 @@ public class WarLib {
 
         //This to to actually shuffle the 'cards'
 
-
-        for(int i=size; i >=0; i--){
-            randomIndex= (int) Math.floor((Math.random() * i)) +1;
-            temp = cardDeck[randomIndex];
-            cardDeck[randomIndex] = cardDeck[i];
-            cardDeck[i] = temp;
-         }
+        if(size >=1) {
+            for (int i = size; i >= 0; i--) {
+                randomIndex = (int) Math.floor((Math.random() * i)) + 1;
+                temp = cardDeck[randomIndex];
+                cardDeck[randomIndex] = cardDeck[i];
+                cardDeck[i] = temp;
+            }
+        }
     }
 
     public static int pullCard(int[] cardDeck){
@@ -98,6 +100,7 @@ public class WarLib {
         int indexOfFirstCard = getLength(cardDeck) -1;
         int card = cardDeck[indexOfFirstCard];
         cardDeck[indexOfFirstCard] = 0;
+        DeckShuffle(cardDeck);
         return card;
     }
 
@@ -116,14 +119,15 @@ public class WarLib {
         int cpuValue = getValue(cpuCard);
 
         boolean winner = playerValue > cpuValue;
+        playerTurn = winner;
         return winner;
     }
 
 
-    public static void returnCard(int[] testDeck,int playerDeck, int cpuDeck){
+/*    public static void returnCard(int[] testDeck,int playerDeck, int cpuDeck){
         putCard(testDeck, playerDeck);
         putCard(testDeck, cpuDeck);
-    }
+    }*/
 
     public static void main(String[] args) {
         int[] testDeck= DeckPointer();
